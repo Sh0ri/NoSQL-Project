@@ -1,9 +1,9 @@
 var client = require('./connection.js');
 
-function create_index()
+function create_index(index_name)
 {
 	client.indices.create({  
-	  index: 'ottawa'},function(err,resp,status) {
+	  index: 'index_name'},function(err,resp,status) {
 	  if(err) {
 	    console.log(err);
 	  }
