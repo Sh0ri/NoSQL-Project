@@ -1,6 +1,6 @@
 var client = require('./connection.js');
 
-function Fill_Index(index_name, index_path){
+export function Fill_Index(res, index_name, index_path){
 
 	//GET JSON FILE
 	var obj = JSON.parse(fs.readFileSync(index_path));
@@ -27,4 +27,5 @@ function Fill_Index(index_name, index_path){
 	})
 	console.log("Compteur : ");
 	console.log(compteur);
+	res.send('fill_index done');
 }

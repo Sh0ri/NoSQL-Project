@@ -2,6 +2,7 @@ const express = require('express');
 
 var client = require('./connection.js');
 var search = require('./search.js');
+var fill_index = require('./fill_index.js');
 
 const app = express();
 const port = 9292;
@@ -42,56 +43,56 @@ async function perform_match_query(res,req_query){
 						var jsonobj = JSON.parse(str);	
 						console.log(jsonobj);
 						filter.push({"range": jsonobj})
-				}*/
+					}*/
 
-				switch(req_query[x+"Mode"]) {
+					switch(req_query[x+"Mode"]) {
 
 					case "0" : // MUST
-						var str = '{"'+x+'":"'+req_query[x]+'"}';
-						var jsonobj = JSON.parse(str);
-						must.push({"match":jsonobj})
-						console.log("MUST DONE");
+					var str = '{"'+x+'":"'+req_query[x]+'"}';
+					var jsonobj = JSON.parse(str);
+					must.push({"match":jsonobj})
+					console.log("MUST DONE");
 					break;
 
 					case "1" : // MUST_NOT
-						var str = '{"'+x+'":"'+req_query[x]+'"}';
-						var jsonobj = JSON.parse(str);
-						must_not.push({"match":jsonobj})
+					var str = '{"'+x+'":"'+req_query[x]+'"}';
+					var jsonobj = JSON.parse(str);
+					must_not.push({"match":jsonobj})
 					break;
 
 					case "2" : // SHOULD
-						var str = '{"'+x+'":"'+req_query[x]+'"}';
-						var jsonobj = JSON.parse(str);
-						should.push({"match":jsonobj})
-						console.log("SHOULD DONE");
+					var str = '{"'+x+'":"'+req_query[x]+'"}';
+					var jsonobj = JSON.parse(str);
+					should.push({"match":jsonobj})
+					console.log("SHOULD DONE");
 					break;
 
 					case "3" : // FILTER >
-						var str = '{"'+x+'":'+ '{"gt":' +req_query[x]+'}}';
-						var jsonobj = JSON.parse(str);
-						console.log("FILTER GT DONE");
-						filter.push({"range": jsonobj})
+					var str = '{"'+x+'":'+ '{"gt":' +req_query[x]+'}}';
+					var jsonobj = JSON.parse(str);
+					console.log("FILTER GT DONE");
+					filter.push({"range": jsonobj})
 					break;
 
 					case "4" : // FILTER >=
-						var str = '{"'+x+'":'+ '{"gte":' +req_query[x]+'}}';
-						var jsonobj = JSON.parse(str);
-						console.log("FILTER GTE DONE");
-						filter.push({"range": jsonobj})
+					var str = '{"'+x+'":'+ '{"gte":' +req_query[x]+'}}';
+					var jsonobj = JSON.parse(str);
+					console.log("FILTER GTE DONE");
+					filter.push({"range": jsonobj})
 					break;
 
 					case "5" : // FILTER <
-						var str = '{"'+x+'":'+ '{"lt":' +req_query[x]+'}}';
-						var jsonobj = JSON.parse(str);
-						console.log("FILTER LT DONE");
-						filter.push({"range": jsonobj})
+					var str = '{"'+x+'":'+ '{"lt":' +req_query[x]+'}}';
+					var jsonobj = JSON.parse(str);
+					console.log("FILTER LT DONE");
+					filter.push({"range": jsonobj})
 					break;
 
 					case "6" : // FILTER <=
-						var str = '{"'+x+'":'+ '{"lte":' +req_query[x]+'}}';
-						var jsonobj = JSON.parse(str);
-						console.log("FILTER LTE DONE");
-						filter.push({"range": jsonobj})
+					var str = '{"'+x+'":'+ '{"lte":' +req_query[x]+'}}';
+					var jsonobj = JSON.parse(str);
+					console.log("FILTER LTE DONE");
+					filter.push({"range": jsonobj})
 					break;
 
 				}
@@ -130,13 +131,22 @@ async function perform_match_query(res,req_query){
 }
 
 app.get('/api/hello', (req, res) => {
-  res.send({ express: 'Hello From Express' });
+	res.send({ express: 'Hello From Express' });
 });
 
 app.get('/api/search', (req, res) => {
 	console.log("Searching");
 
 	perform_match_query(res,req.query);
+});
+
+app.get('/api/populate', (req, res) => {
+	console.log("Populate");
+
+	var index_name = req.query.index_name;
+	var path = req.query.path;
+
+	fill_index(res,index_name,path);
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
